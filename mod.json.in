@@ -1,7 +1,7 @@
 {
-  "id": "io.github.baxlek.hide_infinite_counts",
-  "name": "Hide Infinite Counts",
+  "id": "dev.baxlek.hide_infinite_counts",
+  "name": "Hide Infinite Ammo Counts and Meters",
   "version": "@PROJECT_VERSION@",
   "author": "baxlek",
-  "description": "Hide resource counts and meters while their infinite-resource cheats are active, without hiding item icons."
+  "description": "Hide resource counts and meters while their infinite-resource cheats are active."
 }
