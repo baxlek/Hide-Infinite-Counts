@@ -1,30 +1,48 @@
-# Dusklight Mod Template
+# Hide Infinite Counts
 
-A standalone template for [Dusklight](https://github.com/TwilitRealm/dusklight) mods.
+A [Dusklight](https://github.com/TwilitRealm/dusklight) mod that hides resource counts and meters
+while the corresponding infinite-resource cheats are enabled. Item icons remain visible.
 
-See the [Dusklight modding documentation](https://github.com/TwilitRealm/dusklight/blob/main/docs/modding.md)
-for the full mod API: services, hooking game functions, asset overlays, and more.
+Supported cheats:
+
+- **Infinite Arrows, Seeds, and Bombs:** hides the matching equipped-item and item-ring ammo counts.
+- **Infinite Oil:** hides lantern oil gauges, including the item-ring gauge.
+- **Infinite Oxygen:** hides the oxygen meter.
+- **Infinite Rupees:** hides rupee digits, preserving the rupee icon and key display.
+- **Infinite Hearts:** hides the heart meter.
+
+Bomb-arrow ammo remains visible unless **both** Infinite Arrows and Infinite Bombs are enabled,
+since either finite resource can still run out. Unrelated counts, such as bottled bait, are unchanged.
+The mod reads the effective cheat settings at draw time; toggling a cheat restores its display
+without reloading the mod. It does not enable cheats or change resource quantities.
 
 ## Quick start
 
-1. Click "Use this template" to create a new repository for your mod.
-2. Edit `mod.json.in`: set your mod's `id` (reverse-DNS style, e.g. `com.example.my_mod`),
-   `name`, `author`, and `description`.
-3. Rename the target in `CMakeLists.txt` (`add_mod(my_mod ...)`) (this names the `.dusk` file).
-4. Write your mod in `src/mod.cpp`.
-5. Build locally:
+1. Build locally:
    ```sh
    cmake -B build
    cmake --build build
    ```
 
-The result is `build/mods/<name>.dusk`. Copy it into the game's mods folder to try it:
+2. Copy `build/mods/hide_infinite_counts.dusk` into the game's mods folder:
 
 - Windows: `%APPDATA%\TwilitRealm\Dusklight\mods`
 - Linux: `~/.local/share/TwilitRealm/Dusklight/mods`
 - macOS: `~/Library/Application Support/TwilitRealm/Dusklight/mods`
 
-During development, rebuild, copy and click **Reload** in the in-game mod manager to pick up changes.
+3. Enable **Hide Infinite Counts** in the in-game mod manager, then enable the desired cheats.
+
+During development, rebuild, copy and click **Reload** in the mod manager to pick up changes.
+
+### Manual verification
+
+With cheats disabled, confirm normal counts and meters are visible. Toggle each supported cheat
+individually and verify only its count/meter disappears, with item icons and unrelated counts intact.
+Check both equipped-item buttons and selected/unselected items in the item ring. Test bomb arrows
+with each cheat separately and with both enabled. Toggle cheats off and disable/reload the mod to
+confirm normal rendering returns, including previously hidden leading digits and HUD fades.
+
+This template has no automated test suite; build with the commands above and verify rendering in-game.
 
 > [!IMPORTANT]
 > A mod built locally will only be valid for your own platform, and shouldn't be distributed.
