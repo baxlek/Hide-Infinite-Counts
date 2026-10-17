@@ -5,6 +5,7 @@
 #include "d/d_kantera_icon_meter.h"
 #include "d/d_item_data.h"
 #include "d/d_menu_ring.h"
+#include "d/d_meter2.h"
 #include "d/d_meter2_draw.h"
 #include "d/d_pane_class.h"
 #include "dusk/config_var.hpp"
@@ -21,6 +22,8 @@ DEFINE_HOOK(&dMeter2Draw_c::draw, DrawHud);
 DEFINE_HOOK(&dMeter2Draw_c::drawKanteraScreen, DrawGauge);
 DEFINE_HOOK(&dDlst_KanteraIcon_c::draw, DrawOilGauge);
 DEFINE_HOOK(&dMenu_Ring_c::getItemMaxNum, RingItemMax);
+DEFINE_HOOK(&dMeter2_c::isArrowEquip, ArrowSoundEquip);
+DEFINE_HOOK(&dMeter2_c::isPachinkoEquip, SeedSoundEquip);
 
 using BoolConfig = dusk::config::ConfigVar<bool>;
 static const BoolConfig* infinite_hearts;
@@ -132,6 +135,16 @@ static HookAction on_ring_max_pre(ModContext*, void* args, void* retval, void*) 
     return HOOK_CONTINUE;
 }
 
+static HookAction on_ammo_sound_equip_pre(ModContext*, void*, void* retval, void* userdata) {
+    const auto* cheat = *static_cast<const BoolConfig**>(userdata);
+    if (cheat->getValue()) {
+        // These HUD-only equipment checks gate refill ticks, including on HUD teardown.
+        *static_cast<int*>(retval) = 0;
+        return HOOK_SKIP_ORIGINAL;
+    }
+    return HOOK_CONTINUE;
+}
+
 extern "C" {
 MOD_EXPORT ModResult mod_initialize(ModError*) {
     dusk::config::ConfigVarBase* (*get_config)(std::string_view) = nullptr;
@@ -186,6 +199,19 @@ MOD_EXPORT ModResult mod_initialize(ModError*) {
         return result;
     }
     result = mods::hook::add_pre<RingItemMax>(on_ring_max_pre);
+    if (result != MOD_OK) {
+        return result;
+    }
+
+    HookOptions arrow_sound_options = HOOK_OPTIONS_INIT;
+    arrow_sound_options.userdata = &infinite_arrows;
+    result = mods::hook::add_pre<ArrowSoundEquip>(on_ammo_sound_equip_pre, &arrow_sound_options);
+    if (result != MOD_OK) {
+        return result;
+    }
+    HookOptions seed_sound_options = HOOK_OPTIONS_INIT;
+    seed_sound_options.userdata = &infinite_seeds;
+    result = mods::hook::add_pre<SeedSoundEquip>(on_ammo_sound_equip_pre, &seed_sound_options);
     if (result != MOD_OK) {
         return result;
     }

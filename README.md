@@ -6,6 +6,8 @@ while the corresponding infinite-resource cheats are enabled. Item icons remain 
 Supported cheats:
 
 - **Infinite Arrows, Seeds, and Bombs:** hides the matching equipped-item and item-ring ammo counts.
+  Arrow and seed counter-refill ticks are also muted while their respective cheats are active;
+  bomb counters already refill silently. Weapon-use sounds and finite-ammo refill ticks are unchanged.
 - **Infinite Oil:** hides lantern oil gauges, including the item-ring gauge.
 - **Infinite Oxygen:** hides the oxygen meter.
 - **Infinite Rupees:** hides rupee digits, preserving the rupee icon and key display.
@@ -41,6 +43,9 @@ individually and verify only its count/meter disappears, with item icons and unr
 Check both equipped-item buttons and selected/unselected items in the item ring. Test bomb arrows
 with each cheat separately and with both enabled. Toggle cheats off and disable/reload the mod to
 confirm normal rendering returns, including previously hidden leading digits and HUD fades.
+With Infinite Arrows/Seeds enabled individually, fire the bow/slingshot and confirm weapon sounds
+remain audible but refill ticks do not. With that cheat disabled, collect ammo and confirm normal
+refill ticks return. Also check a finite slingshot with only Infinite Arrows enabled, and vice versa.
 
 This template has no automated test suite; build with the commands above and verify rendering in-game.
 
