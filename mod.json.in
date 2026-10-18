@@ -1,7 +1,7 @@
 {
-  "id": "com.example.my_mod",
-  "name": "My Mod",
+  "id": "dev.baxlek.hide_infinite_counts",
+  "name": "Hide Infinite Ammo Counts and Meters",
   "version": "@PROJECT_VERSION@",
-  "author": "You",
-  "description": "An example Dusklight mod"
+  "author": "baxlek",
+  "description": "Hide resource counts and meters while their infinite-resource cheats are active."
 }
