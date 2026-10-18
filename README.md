@@ -1,4 +1,4 @@
-# Hide Infinite Counts
+# Hide Infinite Ammo Counts and Meters
 
 A [Dusklight](https://github.com/TwilitRealm/dusklight) mod that hides resource counts and meters
 while the corresponding infinite-resource cheats are enabled. Item icons remain visible.
