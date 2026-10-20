@@ -83,12 +83,34 @@ static void hide_for_draw(J2DPane* pane) {
     }
 }
 
+// The same golden tint the game itself uses for the Kantera (lantern oil) meter.
+static const JUtility::TColor kGoldenHeartBlack(255, 255, 140, 255);
+static const JUtility::TColor kGoldenHeartWhite(230, 170, 0, 255);
+
+static void set_heart_color(CPaneMgr* pane, bool golden) {
+    if (pane == nullptr) {
+        return;
+    }
+    if (golden) {
+        pane->setBlackWhite(kGoldenHeartBlack, kGoldenHeartWhite);
+    } else {
+        pane->setBlackWhite(pane->getInitBlack(), pane->getInitWhite());
+    }
+}
+
+// Recolors the heart meter to gold instead of hiding it, so infinite hearts stay
+// visible but visually distinct from the normal red hearts.
+static void update_heart_color(dMeter2Draw_c* hud, bool golden) {
+    for (auto* mark : hud->mpHeartMark) {
+        set_heart_color(mark, golden);
+    }
+    set_heart_color(hud->mpBigHeart, golden);
+}
+
 static HookAction on_hud_pre(ModContext*, void* args, void*, void*) {
     auto* hud = mods::arg<dMeter2Draw_c*>(args, 0);
     hidden_count = 0;
-    if (infinite_hearts->getValue()) {
-        hide_for_draw(hud->mpLifeParent->getPanePtr());
-    }
+    update_heart_color(hud, infinite_hearts->getValue());
     if (infinite_rupees->getValue()) {
         for (auto& digit : hud->mpRupeeTexture) {
             for (auto* pane : digit) {
