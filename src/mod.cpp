@@ -87,24 +87,57 @@ static void hide_for_draw(J2DPane* pane) {
 static const JUtility::TColor kGoldenHeartBlack(255, 255, 140, 255);
 static const JUtility::TColor kGoldenHeartWhite(230, 170, 0, 255);
 
-static void set_heart_color(CPaneMgr* pane, bool golden) {
-    if (pane == nullptr) {
+// bigh_00..03 are the quarter-heart overlay textures drawn while the currently
+// draining/filling heart is partial; dMeter2Draw_c looks them up by tag rather
+// than storing them as members (see dMeter2Draw_c::changeTextureLife), so we do
+// the same.
+static constexpr std::array<u64, 4> kBigHeartTags = {
+    MULTI_CHAR('bigh_00'),
+    MULTI_CHAR('bigh_01'),
+    MULTI_CHAR('bigh_02'),
+    MULTI_CHAR('bigh_03'),
+};
+
+struct SavedColor {
+    bool captured = false;
+    JUtility::TColor black;
+    JUtility::TColor white;
+};
+
+static std::array<SavedColor, 20> saved_heart_colors;
+static std::array<SavedColor, kBigHeartTags.size()> saved_big_heart_colors;
+
+// CPaneMgr::setBlackWhite() only forwards to panes of kind WIN/PIC/TBX. The heart
+// marker and big-heart parent panes are plain container panes, not pictures, so
+// recoloring must target the actual heart picture panes directly (mpLifeTexture
+// and the bigh_* overlays), like dusklight-cosmetics does for its heart color option.
+static void set_picture_color(J2DPane* pane, SavedColor& saved, bool golden) {
+    auto* picture = static_cast<J2DPicture*>(pane);
+    if (picture == nullptr) {
         return;
     }
-    if (golden) {
-        pane->setBlackWhite(kGoldenHeartBlack, kGoldenHeartWhite);
-    } else {
-        pane->setBlackWhite(pane->getInitBlack(), pane->getInitWhite());
+    if (!saved.captured) {
+        saved.black = picture->getBlack();
+        saved.white = picture->getWhite();
+        saved.captured = true;
     }
+    picture->setBlackWhite(golden ? kGoldenHeartBlack : saved.black,
+                            golden ? kGoldenHeartWhite : saved.white);
 }
 
 // Recolors the heart meter to gold instead of hiding it, so infinite hearts stay
 // visible but visually distinct from the normal red hearts.
 static void update_heart_color(dMeter2Draw_c* hud, bool golden) {
-    for (auto* mark : hud->mpHeartMark) {
-        set_heart_color(mark, golden);
+    for (int i = 0; i < 20; ++i) {
+        if (hud->mpLifeTexture[i][1] != nullptr) {
+            set_picture_color(hud->mpLifeTexture[i][1]->getPanePtr(), saved_heart_colors[i],
+                               golden);
+        }
     }
-    set_heart_color(hud->mpBigHeart, golden);
+    for (size_t i = 0; i < kBigHeartTags.size(); ++i) {
+        set_picture_color(hud->mpScreen->search(kBigHeartTags[i]), saved_big_heart_colors[i],
+                           golden);
+    }
 }
 
 static HookAction on_hud_pre(ModContext*, void* args, void*, void*) {
