@@ -84,7 +84,11 @@ static void hide_for_draw(J2DPane* pane) {
 }
 
 // The same golden tint the game itself uses for the Kantera (lantern oil) meter.
-static const JUtility::TColor kGoldenHeartBlack(255, 255, 140, 255);
+// J2DPicture::setTevMode() blends the black/white alpha channels with the
+// texture's own alpha (lerp(black.a, white.a, texAlpha)), so black's alpha must
+// stay 0 to preserve the heart's alpha-masked silhouette; otherwise the masked
+// corners of the texture are forced fully opaque and render as squares.
+static const JUtility::TColor kGoldenHeartBlack(255, 255, 140, 0);
 static const JUtility::TColor kGoldenHeartWhite(230, 170, 0, 255);
 
 // bigh_00..03 are the quarter-heart overlay textures drawn while the currently
