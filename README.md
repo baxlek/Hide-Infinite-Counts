@@ -11,7 +11,7 @@ Supported cheats:
 - **Infinite Oil:** hides lantern oil gauges, including the item-ring gauge.
 - **Infinite Oxygen:** hides the oxygen meter.
 - **Infinite Rupees:** hides rupee digits, preserving the rupee icon and key display.
-- **Infinite Hearts:** hides the heart meter.
+- **Infinite Hearts:** recolors the heart meter gold instead of hiding it.
 
 Bomb-arrow ammo remains visible unless **both** Infinite Arrows and Infinite Bombs are enabled,
 since either finite resource can still run out. Unrelated counts, such as bottled bait, are unchanged.
@@ -43,6 +43,8 @@ individually and verify only its count/meter disappears, with item icons and unr
 Check both equipped-item buttons and selected/unselected items in the item ring. Test bomb arrows
 with each cheat separately and with both enabled. Toggle cheats off and disable/reload the mod to
 confirm normal rendering returns, including previously hidden leading digits and HUD fades.
+With Infinite Hearts enabled, confirm the heart meter stays visible and turns gold; disable the
+cheat and confirm hearts return to their normal red color.
 With Infinite Arrows/Seeds enabled individually, fire the bow/slingshot and confirm weapon sounds
 remain audible but refill ticks do not. With that cheat disabled, collect ammo and confirm normal
 refill ticks return. Also check a finite slingshot with only Infinite Arrows enabled, and vice versa.
